@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pytelegrambotapi = "==4.5.1"
+python-dotenv = "==0.20.0"
 
 [dev-packages]
 flake8 = "*"
