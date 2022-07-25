@@ -6,12 +6,14 @@ name = "pypi"
 [packages]
 pytelegrambotapi = "==4.5.1"
 python-dotenv = "==0.20.0"
+redis = "==4.3.4"
 
 [dev-packages]
 flake8 = "*"
 black = "*"
 isort = "*"
 mypy = "*"
+types-redis = "*"
 
 [requires]
 python_version = "3.6"
