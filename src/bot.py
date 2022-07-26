@@ -1,21 +1,13 @@
-import os
 from typing import Dict, List
 
 import telebot
-from dotenv import load_dotenv
 
-load_dotenv()
-API_TOKEN = os.environ["PLACES_BOT_API_TOKEN"]
+from app import config
+from app.storage import RedisStorage
 
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(config.API_TOKEN)
 
-# store user data in memory for now
-db = {
-    "2397820": [
-        {"title": f"Shop {i}", "address": f"Shop {i} address", "photo": "url"}
-        for i in range(1, 21)
-    ]
-}
+db = RedisStorage(config.REDIS_URL)
 
 
 @bot.message_handler(commands=["list"])
@@ -34,8 +26,7 @@ def handle_list_command(message):
 
 def get_places(user_id: str) -> List[Dict[str, str]]:
     """Return 10 recent places for a user."""
-    result = db.get(user_id)
-    return [] if not result else result[-10:]
+    return db.get(user_id, start=0, end=9)
 
 
 def add_place(user_id):
