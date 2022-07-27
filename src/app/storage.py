@@ -14,12 +14,12 @@ class Storage(ABC):
 
     @abstractmethod
     def get(self, user_id: str) -> List[Dict[str, str]]:
-        """Return list of place objects from storage."""
+        """Get list of items from storage."""
         raise NotImplementedError
 
     @abstractmethod
     def add(self, user_id: str, item: Dict) -> None:
-        """Dump place object to str and add to list."""
+        """Save item in storage."""
         raise NotImplementedError
 
     @abstractmethod
@@ -36,14 +36,17 @@ class RedisStorage(Storage):
         self._redis = redis.from_url(self._url, decode_responses=True)
 
     def get(self, user_id: str, start=0, end=-1) -> List[Dict[str, str]]:
-        """Return list of place objects from storage."""
+        """Return list of items from storage.
+
+        Last saved item comes first.
+        """
         return [
             json.loads(item)
             for item in self._redis.lrange(f"user:{user_id}", start, end)
         ]
 
     def add(self, user_id: str, item: Dict) -> None:
-        """Dump place object to str and push to head."""
+        """Dump item to string and push it on the head of the list."""
         self._redis.lpush(f"user:{user_id}", json.dumps(item))
 
     def delete(self, user_id: str) -> None:
